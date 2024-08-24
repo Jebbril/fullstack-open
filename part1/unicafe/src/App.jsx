@@ -11,7 +11,10 @@ const Heading = (props) => {
 const StatisticLine = (props) => {
 	return (
 		<>
-			<p>{props.text} {props.value}</p>
+			<tr>
+				<td>{props.text}</td>
+				<td>{props.value}</td>
+			</tr>
 		</>
 	)
 }
@@ -24,7 +27,10 @@ const Average = (props) => {
 
 	return (
 		<>
-			<p>average {average}</p>
+			<tr>
+				<td>average</td>
+				<td>{average}</td>
+			</tr>
 		</>
 	)
 }
@@ -50,12 +56,16 @@ const Statistics = (props) => {
 	return (
 		<>
 			<Heading headingText='statistics' />
-			<StatisticLine text='good' value={props.good} />
-			<StatisticLine text='neutral' value={props.neutral} />
-			<StatisticLine text='bad' value={props.bad} />
-			<StatisticLine text='all' value={all} />
+			<table>
+				<tbody>
+					<StatisticLine text='good' value={props.good} />
+					<StatisticLine text='neutral' value={props.neutral} />
+					<StatisticLine text='bad' value={props.bad} />
+					<StatisticLine text='all' value={all} />
 
-			<Average good={props.good} neutral={props.neutral} bad={props.bad} all={all} />
+					<Average good={props.good} neutral={props.neutral} bad={props.bad} all={all} />
+				</tbody>
+			</table>
 		</>
 	)
 }
