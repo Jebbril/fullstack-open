@@ -21,9 +21,16 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+	const [points, setPoints] = useState([0, 0, 0, 0, 0, 0, 0, 0])
 
 	const getRandomNum = () => {
 		setSelected(Math.floor(Math.random() * anecdotes.length - 1 + 1)) // -1 is for getting the last index and +1 is for using the random func
+	}
+
+	const incrementVote = () => {
+		const copy = [...points]
+		copy[selected] += 1
+		setPoints(copy)
 	}
 
   return (
@@ -31,6 +38,10 @@ const App = () => {
 			<div>
 				{anecdotes[selected]}
 			</div>
+			<div>
+				has {points[selected]} {points[selected] == 1 ? 'vote' : 'votes'}
+			</div>
+      <Button text='vote' handleClick={incrementVote} />
       <Button text='next anecdote' handleClick={getRandomNum} />
     </div>
   )
