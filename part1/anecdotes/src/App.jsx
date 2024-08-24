@@ -8,6 +8,30 @@ const Button = (props) => {
 	)
 }
 
+const Anecdote = (props) => {
+	return (
+		<div>
+			<h1>{props.heading}</h1>
+			<div>
+				{props.anecdote}
+			</div>
+			<div>
+				has {props.points} {props.points == 1 ? 'vote' : 'votes'}
+			</div>
+		</div>
+	)
+}
+
+const MostVoted = (props) => {
+	if (!props.pointsArr.every(value => value === 0)){
+		const maxVotes = Math.max(...props.pointsArr)
+
+		return (
+			<Anecdote heading='Anecdote of the day' anecdote={props.anecdote} points={props.points} />
+		)
+	}
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -33,16 +57,16 @@ const App = () => {
 		setPoints(copy)
 	}
 
+	let maxVotes = Math.max(...points)
+
   return (
     <div>
-			<div>
-				{anecdotes[selected]}
-			</div>
-			<div>
-				has {points[selected]} {points[selected] == 1 ? 'vote' : 'votes'}
-			</div>
+			<Anecdote heading='Anecdote of the day' anecdote={anecdotes[selected]} points={points[selected]} />
       <Button text='vote' handleClick={incrementVote} />
       <Button text='next anecdote' handleClick={getRandomNum} />
+
+			{/* <MostVoted heading='Anecdote with most votes' anecdotes={anecdotes} points={points} /> */}
+			<MostVoted heading='Anecdote of the day' anecdote={anecdotes[points.indexOf(maxVotes)]} points={maxVotes} pointsArr={points} />
     </div>
   )
 }
