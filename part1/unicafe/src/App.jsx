@@ -35,6 +35,20 @@ const Average = (props) => {
 	)
 }
 
+const Positive = (props) => {
+	let positive = 0
+	if (props.all != 0)
+		positive = props.good * 100 / props.all
+	return (
+		<>
+			<tr>
+				<td>positive</td>
+				<td>{positive} %</td>
+			</tr>
+		</>
+	)
+}
+
 const Button = (props) => {
 	return (
 		<>
@@ -64,6 +78,7 @@ const Statistics = (props) => {
 					<StatisticLine text='all' value={all} />
 
 					<Average good={props.good} neutral={props.neutral} bad={props.bad} all={all} />
+					<Positive good={props.good} all={all} />
 				</tbody>
 			</table>
 		</>
