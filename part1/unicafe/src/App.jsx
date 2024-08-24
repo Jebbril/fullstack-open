@@ -30,6 +30,15 @@ const Average = (props) => {
 }
 
 const Statistics = (props) => {
+	let all = props.bad + props.good + props.neutral
+	if (!all){
+		return (
+			<>
+				<p>No feedback given</p>
+			</>
+		)
+	}
+		
 	return (
 		<>
 			<Heading headingText='statistics' />
@@ -38,7 +47,7 @@ const Statistics = (props) => {
 			<FeedbackCount text='bad' count={props.bad} />
 			<FeedbackCount text='all' count={props.bad + props.good + props.neutral} />
 
-			<Average good={props.good} neutral={props.neutral} bad={props.bad} all={props.bad + props.good + props.neutral} />
+			<Average good={props.good} neutral={props.neutral} bad={props.bad} all={all} />
 		</>
 	)
 }
