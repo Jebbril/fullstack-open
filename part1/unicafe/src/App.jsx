@@ -16,6 +16,33 @@ const FeedbackCount = (props) => {
 	)
 }
 
+const Average = (props) => {
+	let average = 0
+
+	if (props.all != 0)
+		average = (props.good * 1 + props.neutral * 0 + props.bad * -1) / props.all
+
+	return (
+		<>
+			<p>average {average}</p>
+		</>
+	)
+}
+
+const Statistics = (props) => {
+	return (
+		<>
+			<Heading headingText='statistics' />
+			<FeedbackCount text='good' count={props.good} />
+			<FeedbackCount text='neutral' count={props.neutral} />
+			<FeedbackCount text='bad' count={props.bad} />
+			<FeedbackCount text='all' count={props.bad + props.good + props.neutral} />
+
+			<Average good={props.good} neutral={props.neutral} bad={props.bad} all={props.bad + props.good + props.neutral} />
+		</>
+	)
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -41,10 +68,7 @@ const App = () => {
 			<button onClick={handleNeutral}>neutral</button>
 			<button onClick={handleBad}>bad</button>
 
-      <Heading headingText='statistics' />
-			<FeedbackCount text='good' count={good} />
-			<FeedbackCount text='neutral' count={neutral} />
-			<FeedbackCount text='bad' count={bad} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
