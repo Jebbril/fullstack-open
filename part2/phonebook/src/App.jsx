@@ -21,6 +21,10 @@ const App = () => {
 
 		if (newName === "")
 			return
+		if (persons.find(person => person.name === newName)){
+			alert(`${newName} is already added to phonebook`)
+			return
+		}
 
 		const personObject = {
 			name: newName,
@@ -42,7 +46,6 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <Numbers persons={persons} />
-			<div>debug: {newName}</div>
     </div>
   )
 }
