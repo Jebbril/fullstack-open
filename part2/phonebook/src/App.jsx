@@ -1,11 +1,27 @@
 import { useEffect, useState } from 'react'
-import { getAll, update } from './services/phonebook'
+import { destroy, getAll, update } from './services/phonebook'
 
-const Persons = ({persons, filterValue}) => {
+const DeleteButton = ({onePerson, setPersons, persons}) => {
+	const deletePerson = () => {
+		window.confirm(`Delete ${onePerson.name} ?`)
+		destroy(onePerson.id)
+		.then(response => console.log(response))
+		.catch(error => console.error(`Error deleting person: ${error}`))
+
+		setPersons(persons.filter(person => person.id !== onePerson.id))
+	}
+
+	return <button onClick={deletePerson}>delete</button>
+}
+
+const Persons = ({persons, filterValue, setPersons}) => {
 	return (
 		persons.map(person => 
 			person.name.toLowerCase().includes(filterValue.toLowerCase())
-			? <p key={person.id}>{person.name} {person.number}</p>
+			? <div key={person.id}>
+					<p>{person.name} {person.number}</p>
+					<DeleteButton onePerson={person} setPersons={setPersons} persons={persons} />
+				</div>
 			: false )
 	)
 }
@@ -81,7 +97,7 @@ const App = () => {
 		const personObject = {
 			name: newName,
 			number: newNumber,
-			id: persons.length + 1,
+			id: (parseInt(persons[persons.length -1].id) + 1).toString(),
 		}
 
 		update(personObject)
@@ -93,6 +109,7 @@ const App = () => {
 		.catch(error => console.error(`Error posting data: ${error}`))
 	}
 
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -101,7 +118,7 @@ const App = () => {
       <PersonForm newName={newName} newNumber={newNumber} handleAddPerson={handleAddPerson}
 			handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filterValue={filterValue} />
+      <Persons persons={persons} filterValue={filterValue} setPersons={setPersons} />
     </div>
   )
 }
