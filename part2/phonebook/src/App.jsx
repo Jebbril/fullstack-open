@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { getAll, update } from './services/phonebook'
 
 const Persons = ({persons, filterValue}) => {
 	return (
@@ -38,10 +38,10 @@ const App = () => {
 	useEffect(() => {
 		// console.log('effect')
 
-		axios.get("http://localhost:3001/persons")
-		.then(response => {
+		getAll()
+		.then(data => {
 			// console.log('done')
-			setPersons(response.data)
+			setPersons(data)
 			// console.log(persons)
 		})
 		.catch(error => {
@@ -84,12 +84,13 @@ const App = () => {
 			id: persons.length + 1,
 		}
 
-		axios.post("http://localhost:3001/persons", personObject)
-		.then(response => {
-			setPersons(persons.concat(response.data))
+		update(personObject)
+		.then(data => {
+			setPersons(persons.concat(data))
 			setNewName('')
 			setNewNumber('')
 		})
+		.catch(error => console.error(`Error posting data: ${error}`))
 	}
 
   return (
