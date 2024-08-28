@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { destroy, getAll, update } from './services/phonebook'
+import { destroy, getAll, create, update } from './services/phonebook'
 
 const DeleteButton = ({onePerson, setPersons, persons}) => {
 	const deletePerson = () => {
-		window.confirm(`Delete ${onePerson.name} ?`)
+		if (!window.confirm(`Delete ${onePerson.name} ?`))
+			return
 		destroy(onePerson.id)
 		.then(response => console.log(response))
 		.catch(error => console.error(`Error deleting person: ${error}`))
@@ -85,12 +86,30 @@ const App = () => {
 
 		const sameName = persons.find(person => person.name === newName)
 		const sameNumber = persons.find(person => person.number === newNumber)
+		// console.log(sameName)
 
-		if (sameName){
+		if (sameName && sameNumber){
 			alert(`${newName}is already added to phonebook`)
 			return
-		} else if(sameNumber) {
-			alert(`${newNumber} is already added to phonebook`)
+		} else if(sameName) {
+			if (window.confirm(`${sameName.name} is already added to phonebook, replace the old number with a new one?`)) {
+				const personObject = {...sameName, number: newNumber}
+				update(personObject, sameName.id)
+				.then(data => {
+					// console.log("from update", persons)
+					const newPersons = persons.map(person => {
+						if (person.id === data.id)
+							person.number = data.number
+						return person
+					})
+					// console.log("from update", newPersons)
+					setPersons(newPersons)
+					setNewName('')
+					setNewNumber('')
+					
+				})
+				.catch(error => console.error(`Error updating number: ${error}`))
+			}
 			return
 		}
 
@@ -100,7 +119,7 @@ const App = () => {
 			id: (parseInt(persons[persons.length -1].id) + 1).toString(),
 		}
 
-		update(personObject)
+		create(personObject)
 		.then(data => {
 			setPersons(persons.concat(data))
 			setNewName('')

@@ -7,7 +7,7 @@ const getAll = () => {
 	return request.then(response => response.data)
 }
 
-const update = newObject => {
+const create = newObject => {
 	const request = axios.post(baseUrl, newObject)
 	return request.then(response => response.data)
 }
@@ -16,4 +16,10 @@ const destroy = (id) => {
 	return axios.delete(`${baseUrl}/${id}`)
 }
 
-export {getAll, update, destroy}
+const update = (personObject, id) => {
+	// console.log("inside update function",personObject)
+	const request = axios.put(`${baseUrl}/${id}`, personObject)
+	return request.then(response => response.data)
+}
+
+export {getAll, create, destroy, update}
