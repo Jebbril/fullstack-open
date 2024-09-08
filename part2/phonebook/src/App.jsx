@@ -13,6 +13,18 @@ const Notification = ({ message }) => {
   )
 }
 
+const ErrorMessage = ({ message }) => {
+  if (message === '') {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
 const DeleteButton = ({onePerson, setPersons, persons, notifSetter}) => {
 	const deletePerson = () => {
 		if (!window.confirm(`Delete ${onePerson.name} ?`))
@@ -70,6 +82,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterValue, setFilterValue] = useState('')
 	const [notifMessage, setNotifMessage] = useState('')
+	const [errorMessage, setErrorMessage] = useState('')
 
 	useEffect(() => {
 		// console.log('effect')
@@ -131,7 +144,13 @@ const App = () => {
 					}, 5000)
 					
 				})
-				.catch(error => console.error(`Error updating number: ${error}`))
+				.catch(error =>{
+					// console.error(`Error updating number: ${error}`)
+					setErrorMessage(`Error updating ${newName} ${error}`)
+					setTimeout(() => {
+						setErrorMessage('')
+					}, 5000)
+				})
 			}
 			return
 		}
@@ -160,6 +179,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 			<Notification message={notifMessage} />
+			<ErrorMessage message={errorMessage} />
 			<Filter filterValue={filterValue} handlefilterChange={handlefilterChange} />
 			<h3>Add a new</h3>
       <PersonForm newName={newName} newNumber={newNumber} handleAddPerson={handleAddPerson}
