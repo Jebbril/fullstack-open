@@ -1,12 +1,30 @@
 import { useEffect, useState } from 'react'
 import { destroy, getAll, create, update } from './services/phonebook'
 
-const DeleteButton = ({onePerson, setPersons, persons}) => {
+const Notification = ({ message }) => {
+  if (message === '') {
+    return null
+  }
+
+  return (
+    <div className='notif'>
+      {message}
+    </div>
+  )
+}
+
+const DeleteButton = ({onePerson, setPersons, persons, notifSetter}) => {
 	const deletePerson = () => {
 		if (!window.confirm(`Delete ${onePerson.name} ?`))
 			return
 		destroy(onePerson.id)
-		.then(response => console.log(response))
+		.then(response =>{
+			console.log(response)
+			notifSetter(`Deleted ${onePerson.name}`)
+			setTimeout(() => {
+				notifSetter('')
+			}, 5000)
+		})
 		.catch(error => console.error(`Error deleting person: ${error}`))
 
 		setPersons(persons.filter(person => person.id !== onePerson.id))
@@ -15,13 +33,13 @@ const DeleteButton = ({onePerson, setPersons, persons}) => {
 	return <button onClick={deletePerson}>delete</button>
 }
 
-const Persons = ({persons, filterValue, setPersons}) => {
+const Persons = ({persons, filterValue, setPersons, notifSetter}) => {
 	return (
 		persons.map(person => 
 			person.name.toLowerCase().includes(filterValue.toLowerCase())
 			? <div key={person.id}>
 					<p>{person.name} {person.number}</p>
-					<DeleteButton onePerson={person} setPersons={setPersons} persons={persons} />
+					<DeleteButton onePerson={person} setPersons={setPersons} persons={persons} notifSetter={notifSetter} />
 				</div>
 			: false )
 	)
@@ -51,6 +69,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterValue, setFilterValue] = useState('')
+	const [notifMessage, setNotifMessage] = useState('')
 
 	useEffect(() => {
 		// console.log('effect')
@@ -106,6 +125,10 @@ const App = () => {
 					setPersons(newPersons)
 					setNewName('')
 					setNewNumber('')
+					setNotifMessage(`Updated ${newName}`)
+					setTimeout(() => {
+						setNotifMessage('')
+					}, 5000)
 					
 				})
 				.catch(error => console.error(`Error updating number: ${error}`))
@@ -124,6 +147,10 @@ const App = () => {
 			setPersons(persons.concat(data))
 			setNewName('')
 			setNewNumber('')
+			setNotifMessage(`Added ${newName}`)
+			setTimeout(() => {
+				setNotifMessage('')
+			}, 5000)
 		})
 		.catch(error => console.error(`Error posting data: ${error}`))
 	}
@@ -132,12 +159,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+			<Notification message={notifMessage} />
 			<Filter filterValue={filterValue} handlefilterChange={handlefilterChange} />
 			<h3>Add a new</h3>
       <PersonForm newName={newName} newNumber={newNumber} handleAddPerson={handleAddPerson}
 			handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filterValue={filterValue} setPersons={setPersons} />
+      <Persons persons={persons} filterValue={filterValue} setPersons={setPersons} notifSetter={setNotifMessage} />
     </div>
   )
 }
